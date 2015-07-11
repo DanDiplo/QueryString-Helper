@@ -422,25 +422,34 @@ namespace Diplo.Helpers
 		/// </summary>
 		/// <param name="removeEmpty">If set to <c>true</c> keys with no value are removed</param>
 		/// <returns>The querystring as a string with empty keys removed</returns>
-		public string GetQueryString(bool removeEmpty)
-		{
-			StringBuilder qs = new StringBuilder();
+        public string GetQueryString(bool removeEmpty)
+        {
+            StringBuilder qs = new StringBuilder();
 
-			int len = QueryStringCollection.Keys.Count;
+            int len = QueryStringCollection.Keys.Count;
 
-			for (int i = 0; i < len; i++)
-			{
-				string val = QueryStringCollection.Get(i);
-				if (String.IsNullOrEmpty(val) && removeEmpty)
-					continue;
+            for (int i = 0; i < len; i++)
+            {
+                string val = QueryStringCollection.Get(i);
+                if (String.IsNullOrEmpty(val) && removeEmpty)
+                    continue;
 
-				qs.AppendFormat("{0}={1}", HttpUtility.UrlEncode(QueryStringCollection.GetKey(i)), HttpUtility.UrlEncode(QueryStringCollection.Get(i)));
-				if (i < len - 1)
-					qs.Append("&");
-			}
+                string key = HttpUtility.UrlEncode(QueryStringCollection.GetKey(i));
+                var items = QueryStringCollection.Get(i).Split(','); // required as Get returns CSV for values with same key
 
-			return qs.ToString();
-		}
+                foreach (var value in items)
+                {
+                    qs.AppendFormat("{0}={1}&", key, HttpUtility.UrlEncode(value));
+                }
+            }
+
+            if (len > 0)
+            {
+                qs.Length -= 1;
+            }
+
+            return qs.ToString();
+        }
 
 		/// <summary>
 		/// Converts the querystring NameValueCollection to a generic Dictionary that can be easily interated over
