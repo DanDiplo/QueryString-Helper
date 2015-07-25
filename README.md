@@ -26,7 +26,9 @@ qs.RemoveByName("email"); // removes the "email" key
 
 IEnumerable<string> options = qs.GetMultipleValuesByName("option"); // options[0] = "apple", options[1] = "banana", options[2] = "melon"
 
-DateTime date = qs.GetValueByName<DateTime>("date");
+DateTime date = qs.GetValueByName<DateTime>("date"); // get a DateTime value
+
+var day = qs.GetValueByName<int?>("day", x => Convert.ToInt32(x)); // day = null
 
 var mailAddress = qs.GetValueByName<System.Net.Mail.MailAddress>("email", e => new System.Net.Mail.MailAddress(e)); // use a delegate func
 
